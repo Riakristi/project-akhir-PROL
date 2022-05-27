@@ -20,7 +20,7 @@ class tampilanAwal(tampilan_awal):
     def admin(self):
         tampilanAwalWindow.close()
 
-        self.loginAdminWindow = QtWidgets.QDialog()
+        self.loginAdminWindow = QtWidgets.QWidget()
         self.loginAdminUi = login_admin()
         self.loginAdminUi.setupUi(self.loginAdminWindow)
         self.loginAdminWindow.show()
@@ -35,7 +35,7 @@ class tampilanAwal(tampilan_awal):
             self.loginAdminUi.labelWarning.setText("Login berhasil!")
             self.loginAdminUi.labelWarning.show()
             
-            self.adminWindow = QtWidgets.QDialog()
+            self.adminWindow = QtWidgets.QWidget()
             self.adminWindowUi = menu_admin()
             self.adminWindowUi.setupUi(self.adminWindow)
             self.loginAdminWindow.hide()
@@ -66,14 +66,11 @@ class tampilanAwal(tampilan_awal):
         self.pilihanmenuUi.setupUi(self.pilihanmenu)
         self.listcup.hide()
         self.pilihanmenu.show()
-
-
-
         
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
-    tampilanAwalWindow = QtWidgets.QDialog()
+    tampilanAwalWindow = QtWidgets.QWidget()
     tampilanAwalUi = tampilanAwal(tampilanAwalWindow)
     tampilanAwalWindow.show()
 
