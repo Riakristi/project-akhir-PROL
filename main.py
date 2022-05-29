@@ -1,4 +1,3 @@
-from distutils.log import error
 import sys
 from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtGui import QPixmap
@@ -91,6 +90,17 @@ class tampilanAwal(tampilan_awal):
         self.pilihanmenuUi.setupUi(self.pilihanmenu)
         self.listcup.hide()
         self.pilihanmenu.show()
+        
+        self.pilihanmenuUi.checkBox_4.setText(model.getNama(1))
+        self.pilihanmenuUi.checkBox_5.setText(model.getNama(2))
+        self.pilihanmenuUi.checkBox_6.setText(model.getNama(3))
+        self.pilihanmenuUi.checkBox_7.setText(model.getNama(4))
+        
+        self.pilihanmenuUi.checkBox_8.setText(model.getNama(5))
+        self.pilihanmenuUi.checkBox_12.setText(model.getNama(9))
+        self.pilihanmenuUi.checkBox_9.setText(model.getNama(6))
+        self.pilihanmenuUi.checkBox_10.setText(model.getNama(7))
+        self.pilihanmenuUi.checkBox_11.setText(model.getNama(8))
 
 class updateStok(update_admin):
     def __init__(self, dialog):
@@ -124,7 +134,7 @@ class riwayatPembelian(riwayat_pembelian):
         riwayat_pembelian.__init__(self)
         self.setupUi(dialog)
 
-        self.pushButtonRiwayatPembelian.clicked.connect()
+        # self.pushButtonRiwayatPembelian.clicked.connect()
 
 # class HistoryPenjualan(history):
 #     def _init_(self, dialog):
