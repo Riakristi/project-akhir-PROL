@@ -16,14 +16,6 @@ def createDatabase():
     print("SQLite table created")
     cursor.close()
 
-def insertData(*data):
-    cursor.execute('''INSERT INTO data_barang (
-                                Jenis ,Nama, Keterangan, Kode)
-                                VALUES
-                                (?,?,?,?)''',((data[0]),data[1],data[2],(data[3])))
-
-    connection.commit()
-
 def getMenu(jenis):
     try:
         get = cursor.execute("SELECT * FROM data_barang WHERE Jenis=?", (jenis,))
@@ -49,5 +41,3 @@ def getNama(index):
 
     except sqlite3.Error as e:
         print(e)
-
-print(updateMenu("Cok", "Vanilla"))
