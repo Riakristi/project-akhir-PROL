@@ -8,6 +8,7 @@ from layout.menu_admin import Ui_Form as menu_admin
 from layout.edit_rasa_topping import Ui_UpdateStok as update_admin
 from layout.list_cup import Ui_Form as list_cup
 from layout.pilihan import Ui_Form as pilihan_menu
+from layout.history import Ui_Form as riwayat_pembelian
 import model
 
 class tampilanAwal(tampilan_awal):
@@ -50,6 +51,7 @@ class tampilanAwal(tampilan_awal):
             self.menuAdminWindow.show()
 
             self.menuAdminUi.pushButtonUpdateStok.clicked.connect(self.menuAdmin)
+            self.menuAdminUi.pushButtonRiwayatPembelian.clicked.connect(self.riwayatPembelianAdmin)
             self.menuAdminUi.pushButtonKembali.clicked.connect(self.welcomeScreen)
         
         else:
@@ -61,6 +63,12 @@ class tampilanAwal(tampilan_awal):
         self.menuAdminUi.updateUi = update_admin()
         self.menuAdminUi.updateApp = updateStok(self.menuAdminUi.updateWindow)
         self.menuAdminUi.updateWindow.show()
+
+    def riwayatPembelianAdmin(self):
+        self.menuAdminUi.riwayatPembelianWindow = QtWidgets.QWidget()
+        self.menuAdminUi.riwayatPembelianUi = riwayat_pembelian()
+        self.menuAdminUi.riwayatPembelianApp = riwayatPembelian(self.menuAdminUi.riwayatPembelianWindow)
+        self.menuAdminUi.riwayatPembelianWindow.show()
 
     def inputNama(self):
         nama = self.lineEditNama.text()
@@ -110,6 +118,37 @@ class updateStok(update_admin):
         model.updateMenu(namaAwal, namaGanti)
         msg.setText("Data berhasil diganti")
         msg.exec_()
+
+class riwayatPembelian(riwayat_pembelian):
+    def __init__(self, dialog):
+        riwayat_pembelian.__init__(self)
+        self.setupUi(dialog)
+
+        self.pushButtonRiwayatPembelian.clicked.connect()
+
+# class HistoryPenjualan(history):
+#     def _init_(self, dialog):
+#         history._init_(self)
+#         self.setupUi(dialog)
+#         self.mainHistory = QtWidgets.QDialog()
+#         self.mainUI = history()
+#         self.mainUI.setupUi(self.mainHistory)
+#         menu_admin.hide()
+#         self.mainHistory.show()
+#         self.viewData()
+#         model2.createDatabase()
+
+#     def viewData(self):
+#         data = model2.viewDataFromDB()
+
+#         for penjualan in data:
+#             rowPosition = self.mainUI.tableWidgetHistory.rowCount()
+#             self.mainUI.tableWidgetHistory.insertRow(rowPosition)
+#             self.mainUI.tableWidgetHistory.setItem(rowPosition, 0, QtWidgets.QTableWidgetItem(penjualan[0]))
+#             self.mainUI.tableWidgetHistory.setItem(rowPosition, 1, QtWidgets.QTableWidgetItem(penjualan[1]))
+#             self.mainUI.tableWidgetHistory.setItem(rowPosition, 2, QtWidgets.QTableWidgetItem(penjualan[2]))
+#             self.mainUI.tableWidgetHistory.setItem(rowPosition, 3, QtWidgets.QTableWidgetItem(penjualan[3]))
+#             self.mainUI.tableWidgetHistory.setItem(rowPosition, 4, QtWidgets.QTableWidgetItem(penjualan[4]))
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
