@@ -1,6 +1,6 @@
-from re import U
 import datetime
 import sys
+from PyQt5.QtWidgets import QMessageBox
 from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtGui import QPixmap
 from layout.tampilan_awal import Ui_Form as tampilan_awal
@@ -37,7 +37,7 @@ class tampilanAwal(tampilan_awal):
         self.welcomeWindow.show()
 
     def admin(self):
-        tampilanAwalWindow.close()
+        tampilanAwalWindow.close() or self.welcomeWindow.close()
 
         self.loginAdminWindow = QtWidgets.QMainWindow()
         self.loginAdminUi = login_admin()
@@ -176,7 +176,7 @@ class tampilanAwal(tampilan_awal):
         
 
     def payment(self):
-        self.pembayaran = QtWidgets.QWidget()
+        self.pembayaran = QtWidgets.QMainWindow()
         self.pembayaranUi = pembayaran()
         self.pembayaranUi.setupUi(self.pembayaran)
         self.pilihanmenu.hide()
@@ -289,6 +289,10 @@ class updateStok(update_admin):
         msg = QtWidgets.QMessageBox()
 
         model.updateMenu(namaAwal, namaGanti)
+        self.lineEditInput.setText("")
+        self.showMenu()
+        msg.setIcon(QMessageBox.Information)
+        msg.setWindowTitle("Status data")
         msg.setText("Data berhasil diganti")
         msg.exec_()
 
