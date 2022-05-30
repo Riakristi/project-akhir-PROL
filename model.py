@@ -37,7 +37,7 @@ def getNama(index):
     try:
         get = cursor.execute("SELECT * FROM data_barang WHERE Kode=?", (index,))
         fetch = get.fetchall()
-        return fetch[0][1]
+        return (fetch[0][1]).upper()
 
     except sqlite3.Error as e:
         print(e)
