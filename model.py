@@ -41,3 +41,12 @@ def getNama(index):
 
     except sqlite3.Error as e:
         print(e)
+
+def getHarga(index):
+    try:
+        get = cursor.execute("SELECT * FROM data_barang WHERE Kode=?", (index,))
+        fetch = get.fetchall()
+        return fetch[0][2]
+
+    except sqlite3.Error as e:
+        print(e)
