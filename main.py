@@ -1,3 +1,4 @@
+from re import U
 import datetime
 import sys
 from PyQt5 import QtWidgets, QtGui
@@ -175,7 +176,7 @@ class tampilanAwal(tampilan_awal):
         
 
     def payment(self):
-        self.pembayaran = QtWidgets.QMainWindow()
+        self.pembayaran = QtWidgets.QWidget()
         self.pembayaranUi = pembayaran()
         self.pembayaranUi.setupUi(self.pembayaran)
         self.pilihanmenu.hide()
