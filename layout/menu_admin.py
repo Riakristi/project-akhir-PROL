@@ -11,16 +11,20 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_Form(object):
-    def setupUi(self, Form):
-        Form.setObjectName("Form")
-        Form.resize(315, 245)
-        self.verticalLayoutWidget = QtWidgets.QWidget(Form)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(10, 10, 291, 231))
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(420, 321)
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.verticalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(10, 10, 401, 271))
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout.setContentsMargins(5, 5, 5, 5)
         self.verticalLayout.setObjectName("verticalLayout")
+        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout.addItem(spacerItem)
         self.labelNama = QtWidgets.QLabel(self.verticalLayoutWidget)
         font = QtGui.QFont()
         font.setPointSize(18)
@@ -30,8 +34,8 @@ class Ui_Form(object):
         self.labelNama.setAlignment(QtCore.Qt.AlignCenter)
         self.labelNama.setObjectName("labelNama")
         self.verticalLayout.addWidget(self.labelNama)
-        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout.addItem(spacerItem)
+        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout.addItem(spacerItem1)
         self.pushButtonUpdateStok = QtWidgets.QPushButton(self.verticalLayoutWidget)
         self.pushButtonUpdateStok.setObjectName("pushButtonUpdateStok")
         self.verticalLayout.addWidget(self.pushButtonUpdateStok)
@@ -41,30 +45,38 @@ class Ui_Form(object):
         self.pushButtonRekapPenjualan = QtWidgets.QPushButton(self.verticalLayoutWidget)
         self.pushButtonRekapPenjualan.setObjectName("pushButtonRekapPenjualan")
         self.verticalLayout.addWidget(self.pushButtonRekapPenjualan)
-        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout.addItem(spacerItem1)
+        spacerItem2 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout.addItem(spacerItem2)
         self.pushButtonKembali = QtWidgets.QPushButton(self.verticalLayoutWidget)
         self.pushButtonKembali.setObjectName("pushButtonKembali")
         self.verticalLayout.addWidget(self.pushButtonKembali)
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 420, 18))
+        self.menubar.setObjectName("menubar")
+        MainWindow.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        self.statusbar.setObjectName("statusbar")
+        MainWindow.setStatusBar(self.statusbar)
 
-        self.retranslateUi(Form)
-        QtCore.QMetaObject.connectSlotsByName(Form)
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def retranslateUi(self, Form):
+    def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
-        self.labelNama.setText(_translate("Form", "Menu Admin"))
-        self.pushButtonUpdateStok.setText(_translate("Form", "Update Stok"))
-        self.pushButtonRiwayatPembelian.setText(_translate("Form", "Riwayat Pembelian"))
-        self.pushButtonRekapPenjualan.setText(_translate("Form", "Rekap Penjualan"))
-        self.pushButtonKembali.setText(_translate("Form", "Kembali"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.labelNama.setText(_translate("MainWindow", "Menu Admin"))
+        self.pushButtonUpdateStok.setText(_translate("MainWindow", "Update Stok"))
+        self.pushButtonRiwayatPembelian.setText(_translate("MainWindow", "Riwayat Pembelian"))
+        self.pushButtonRekapPenjualan.setText(_translate("MainWindow", "Rekap Penjualan"))
+        self.pushButtonKembali.setText(_translate("MainWindow", "Kembali"))
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    Form = QtWidgets.QWidget()
-    ui = Ui_Form()
-    ui.setupUi(Form)
-    Form.show()
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
     sys.exit(app.exec_())

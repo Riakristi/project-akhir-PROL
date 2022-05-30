@@ -2,9 +2,9 @@ import sys
 from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtGui import QPixmap
 from layout.tampilan_awal import Ui_Form as tampilan_awal
-from layout.login_admin import Ui_Admin as login_admin
-from layout.menu_admin import Ui_Form as menu_admin
-from layout.edit_rasa_topping import Ui_UpdateStok as update_admin
+from layout.login_admin import Ui_MainWindow as login_admin
+from layout.menu_admin import Ui_MainWindow as menu_admin
+from layout.edit_rasa_topping import Ui_MainWindow as update_admin
 from layout.list_cup import Ui_Form as list_cup
 from layout.pilihan import Ui_Form as pilihan_menu
 from layout.history import Ui_Form as riwayat_pembelian
@@ -29,11 +29,10 @@ class tampilanAwal(tampilan_awal):
     def admin(self):
         tampilanAwalWindow.close()
 
-        self.loginAdminWindow = QtWidgets.QWidget()
+        self.loginAdminWindow = QtWidgets.QMainWindow()
         self.loginAdminUi = login_admin()
         self.loginAdminUi.setupUi(self.loginAdminWindow)
         self.loginAdminWindow.show()
-
         self.loginAdminUi.pushButtonLogin.clicked.connect(self.login)
 
     def login(self):
@@ -43,7 +42,7 @@ class tampilanAwal(tampilan_awal):
         if(username == "admin" and password == "1234"):
             self.loginAdminUi.labelWarning.show()
             
-            self.menuAdminWindow = QtWidgets.QWidget()
+            self.menuAdminWindow = QtWidgets.QMainWindow()
             self.menuAdminUi = menu_admin()
             self.menuAdminUi.setupUi(self.menuAdminWindow)
             self.loginAdminWindow.close()
@@ -58,7 +57,7 @@ class tampilanAwal(tampilan_awal):
             self.loginAdminUi.labelWarning.show()
 
     def menuAdmin(self):
-        self.menuAdminUi.updateWindow = QtWidgets.QWidget()
+        self.menuAdminUi.updateWindow = QtWidgets.QMainWindow()
         self.menuAdminUi.updateUi = update_admin()
         self.menuAdminUi.updateApp = updateStok(self.menuAdminUi.updateWindow)
         self.menuAdminUi.updateWindow.show()
