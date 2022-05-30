@@ -1,3 +1,5 @@
+from re import U
+import datetime
 import sys
 from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtGui import QPixmap
@@ -8,7 +10,15 @@ from layout.edit_rasa_topping import Ui_MainWindow as update_admin
 from layout.list_cup import Ui_Form as list_cup
 from layout.pilihan import Ui_Form as pilihan_menu
 from layout.history import Ui_Form as riwayat_pembelian
+from layout.rekap_penjualan import Ui_Form as rekap_penjualan
+from layout.pembayaran import Ui_pembayaran as pembayaran
 import model
+import model2
+import xendit
+from xendit import EWallet
+import qrcode, json
+
+xendit.api_key = "xnd_development_nQN91JP7PtSKjWmf9dJJRpltxiS3nF0gXRvsFsdGMF7b92VxlAy7doG1pV2tMO"
 
 class tampilanAwal(tampilan_awal):
     def __init__(self, dialog):
@@ -51,6 +61,7 @@ class tampilanAwal(tampilan_awal):
             self.menuAdminUi.pushButtonUpdateStok.clicked.connect(self.menuAdmin)
             self.menuAdminUi.pushButtonRiwayatPembelian.clicked.connect(self.riwayatPembelianAdmin)
             self.menuAdminUi.pushButtonKembali.clicked.connect(self.welcomeScreen)
+            self.menuAdminUi.pushButtonRekapPenjualan.clicked.connect(self.rekapPenjualanAdmin)
         
         else:
             self.loginAdminUi.labelWarning.setText("Login gagal. Coba lagi!")
@@ -68,7 +79,14 @@ class tampilanAwal(tampilan_awal):
         self.menuAdminUi.riwayatPembelianApp = riwayatPembelian(self.menuAdminUi.riwayatPembelianWindow)
         self.menuAdminUi.riwayatPembelianWindow.show()
 
+    def rekapPenjualanAdmin(self):
+        self.menuAdminUi.rekapPenjualanWindow = QtWidgets.QWidget()
+        self.menuAdminUi.rekapPenualanUi = rekap_penjualan()
+        self.menuAdminUi.rekapPenjualanApp = rekapPenjualan(self.menuAdminUi.rekapPenjualanWindow)
+        self.menuAdminUi.rekapPenjualanWindow.show()
+
     def inputNama(self):
+        global nama
         nama = self.lineEditNama.text()
 
         self.listcup = QtWidgets.QWidget()
@@ -84,12 +102,36 @@ class tampilanAwal(tampilan_awal):
         self.listcupUi.pushButtonNext.clicked.connect(self.pilihan)
 
     def pilihan(self):
+        global ukuran_cup,varian_rasa,varian_toping
         self.pilihanmenu = QtWidgets.QWidget()
         self.pilihanmenuUi = pilihan_menu()
         self.pilihanmenuUi.setupUi(self.pilihanmenu)
         self.listcup.hide()
         self.pilihanmenu.show()
         
+        if self.pilihanmenuUi.checkBox.isChecked():
+            ukuran_cup = "SMALL"
+        elif self.pilihanmenuUi.checkBox_2.isChecked():
+            ukuran_cup = "MEDIUM"
+        elif self.pilihanmenuUi.checkBox_3.isChecked():
+            ukuran_cup = "LARGE"
+        if self.pilihanmenuUi.checkBox_4.isChecked():
+            varian_rasa = model.getNama(1)
+        elif self.pilihanmenuUi.checkBox_5.isChecked():
+            varian_rasa = model.getNama(2)
+        elif self.pilihanmenuUi.checkBox_6.isChecked():
+            varian_rasa = model.getNama(3)
+        elif self.pilihanmenuUi.checkBox_7.isChecked():
+            varian_rasa = model.getNama(4)
+        if self.pilihanmenuUi.checkBox_8.isChecked():
+            varian_toping = model.getNama(5)
+        elif self.pilihanmenuUi.checkBox_9.isChecked():
+            varian_toping = model.getNama(6)
+        elif self.pilihanmenuUi.checkBox_10.isChecked():
+            varian_toping = model.getNama(7)
+        elif self.pilihanmenuUi.checkBox_11.isChecked():
+            varian_toping = model.getNama(8)
+
         self.pilihanmenuUi.checkBox_4.setText(model.getNama(1))
         self.pilihanmenuUi.checkBox_5.setText(model.getNama(2))
         self.pilihanmenuUi.checkBox_6.setText(model.getNama(3))
@@ -100,6 +142,128 @@ class tampilanAwal(tampilan_awal):
         self.pilihanmenuUi.checkBox_9.setText(model.getNama(6))
         self.pilihanmenuUi.checkBox_10.setText(model.getNama(7))
         self.pilihanmenuUi.checkBox_11.setText(model.getNama(8))
+
+        self.pilihanmenuUi.pushButton_2.clicked.connect(self.payment)
+
+    def checkbox(self):
+        global harga, varian_rasa, varian_toping
+        if self.pilihanmenuUi.checkBox.isChecked():
+            ukuran_cup = "SMALL"
+        elif self.pilihanmenuUi.checkBox_2.isChecked():
+            ukuran_cup = "MEDIUM"
+        elif self.pilihanmenuUi.checkBox_3.isChecked():
+            ukuran_cup = "LARGE"
+        if self.pilihanmenuUi.checkBox_4.isChecked():
+            varian_rasa = model.getNama(1)
+        elif self.pilihanmenuUi.checkBox_5.isChecked():
+            varian_rasa = model.getNama(2)
+        elif self.pilihanmenuUi.checkBox_6.isChecked():
+            varian_rasa = model.getNama(3)
+        elif self.pilihanmenuUi.checkBox_7.isChecked():
+            varian_rasa = model.getNama(4)
+        if self.pilihanmenuUi.checkBox_8.isChecked():
+            varian_toping = model.getNama(5)
+        elif self.pilihanmenuUi.checkBox_9.isChecked():
+            varian_toping = model.getNama(6)
+        elif self.pilihanmenuUi.checkBox_10.isChecked():
+            varian_toping = model.getNama(7)
+        elif self.pilihanmenuUi.checkBox_11.isChecked():
+            varian_toping = model.getNama(8)
+
+        harga_rasa = model.getHarga(varian_rasa)
+        harga_topping = model.getHarga(varian_toping)
+        harga = int(harga_rasa[0][0]) + int(harga_topping[0][0])    
+        
+
+    def payment(self):
+        self.pembayaran = QtWidgets.QWidget()
+        self.pembayaranUi = pembayaran()
+        self.pembayaranUi.setupUi(self.pembayaran)
+        self.pilihanmenu.hide()
+        self.pembayaran.show()  
+        self.checkbox()
+        self.qr()
+
+
+        self.pembayaranUi.qr_label.setPixmap(QtGui.QPixmap('qr.png').scaled(248, 248))
+        self.pembayaranUi.pushButton_cek.clicked.connect(self.cek_bayar)
+
+    def cek_bayar(self):
+        status = self.check_status(charge_id)
+        if status != "SUCCESS":
+            self.cek_bayar()
+        else:
+            print(status.status)
+        
+            
+    def create_charge(self, product):
+        basket = []
+        harga = 0
+        for item in product:
+            basket_item = EWallet.helper_create_basket_item(
+                reference_id = "basket-product-ref-id",
+                name = item['name'],
+                category = item['category'],
+                currency = "IDR",
+                price = item['harga'],
+                quantity = item['quantity'],
+                type = "product_type",
+                sub_category = "product_sub_category",
+                metadata = {
+                    "meta": "data"
+                }
+            )
+            harga = harga + (item['harga'] * item['quantity'])
+            basket.append(basket_item)
+
+        ewallet_charge = EWallet.create_ewallet_charge(
+            reference_id="basket-product-ref-id",
+            currency="IDR",
+            amount=harga,
+            checkout_method="ONE_TIME_PAYMENT",
+            channel_code="ID_SHOPEEPAY",
+            channel_properties={
+                "success_redirect_url": "https://yourwebsite.com/order/123",
+            },
+            basket=basket,
+        )
+        qr_string = ewallet_charge.actions['mobile_deeplink_checkout_url']
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+           
+        )
+        qr.add_data(qr_string)
+        qr.make(fit=True)
+
+        img = qr.make_image(fill_color="black", back_color="white")
+        img.save('qr.png')
+        
+        return ewallet_charge
+
+    def check_status(self, charge_id):
+        ewallet_status = EWallet.get_ewallet_charge_status(
+            charge_id=charge_id,
+        )
+        return ewallet_status
+
+
+    def qr(self):
+        global charge_id
+        product = [
+        {
+            'name': varian_rasa + ":" + varian_toping ,
+            'category': 'minuman',
+            'harga': harga,
+            'quantity': 1
+        },
+        ]
+        
+        request = self.create_charge(product)
+        charge_id = request.id
+        
 
 class updateStok(update_admin):
     def __init__(self, dialog):
@@ -128,36 +292,72 @@ class updateStok(update_admin):
         msg.setText("Data berhasil diganti")
         msg.exec_()
 
+class pilihanMenu(pilihan_menu):
+    def __init__(self, dialog):
+        pilihan_menu.__init__(self)
+        self.setupUi(dialog)
+
+    # def checkPilihan(self):
+    #     self.button_group_cup = QtWidgets.QButtonGroup() 
+    #     self.button_group_cup.addButton(self.listcupUi.pilihanMenuUi.checkBox) 
+    #     self.button_group_cup.addButton(self.listcupUi.pilihanMenuUi.checkBox_2) 
+    #     self.button_group_cup.addButton(self.listcupUi.pilihanMenuUi.checkBox_3)
+
+    #     self.button_group_cup.setExclusive(False) 
+    #     for cup in self.button_group_cup.buttons(): 
+    #         cup.setCheckState(QtCore.Qt.Unchecked)
+
 class riwayatPembelian(riwayat_pembelian):
     def __init__(self, dialog):
         riwayat_pembelian.__init__(self)
         self.setupUi(dialog)
 
-        # self.pushButtonRiwayatPembelian.clicked.connect()
+    def tambahData(self):
+        nama_pembeli = nama
+        waktu = datetime.datetime.today()
 
-# class HistoryPenjualan(history):
-#     def _init_(self, dialog):
-#         history._init_(self)
-#         self.setupUi(dialog)
-#         self.mainHistory = QtWidgets.QDialog()
-#         self.mainUI = history()
-#         self.mainUI.setupUi(self.mainHistory)
-#         menu_admin.hide()
-#         self.mainHistory.show()
-#         self.viewData()
-#         model2.createDatabase()
+        tanggal_pembelian = waktu.strftime("%A, %d %B, %Y, %H:%M:%S")
+        
+        model2.insertDatatoDB(nama_pembeli,tanggal_pembelian,ukuran_cup,varian_rasa,varian_toping)
 
-#     def viewData(self):
-#         data = model2.viewDataFromDB()
+        rowPosition = self.tableWidget.rowCount()
+        self.tableWidget.insertRow(rowPosition)
+        self.tableWidget.setItem(rowPosition, 0, QtWidgets.QTableWidgetItem(nama_pembeli))
+        self.tableWidget.setItem(rowPosition, 1, QtWidgets.QTableWidgetItem(tanggal_pembelian))
+        self.tableWidget.setItem(rowPosition, 2, QtWidgets.QTableWidgetItem(ukuran_cup))
+        self.tableWidget.setItem(rowPosition, 3, QtWidgets.QTableWidgetItem(varian_rasa))
+        self.tableWidget.setItem(rowPosition, 4, QtWidgets.QTableWidgetItem(varian_toping))
 
-#         for penjualan in data:
-#             rowPosition = self.mainUI.tableWidgetHistory.rowCount()
-#             self.mainUI.tableWidgetHistory.insertRow(rowPosition)
-#             self.mainUI.tableWidgetHistory.setItem(rowPosition, 0, QtWidgets.QTableWidgetItem(penjualan[0]))
-#             self.mainUI.tableWidgetHistory.setItem(rowPosition, 1, QtWidgets.QTableWidgetItem(penjualan[1]))
-#             self.mainUI.tableWidgetHistory.setItem(rowPosition, 2, QtWidgets.QTableWidgetItem(penjualan[2]))
-#             self.mainUI.tableWidgetHistory.setItem(rowPosition, 3, QtWidgets.QTableWidgetItem(penjualan[3]))
-#             self.mainUI.tableWidgetHistory.setItem(rowPosition, 4, QtWidgets.QTableWidgetItem(penjualan[4]))
+class rekapPenjualan(rekap_penjualan):
+    def __init__(self, dialog):
+        rekap_penjualan.__init__(self)
+        self.setupUi(dialog)
+    
+    def viewData(self):
+        cupsizeSmall = model2.viewDataFromDB("ukuran_cup","SMALL")
+        cupsizeMedium = model2.viewDataFromDB("ukuran_cup","MEDIUM")
+        cupsizeLarge = model2.viewDataFromDB("ukuran_cup","LARGE")
+
+        ambilrasa = model2.ambilrasa()
+        rowPosition_cupsize = self.tableWidgetCupSize.rowCount()
+        self.tableWidgetCupSize.setItem(rowPosition_cupsize, 0, QtWidgets.QTableWidget(str(len(cupsizeSmall))))
+        self.tableWidgetCupSize.setItem(rowPosition_cupsize, 1, QtWidgets.QTableWidget(str(len(cupsizeMedium))))
+        self.tableWidgetCupSize.setItem(rowPosition_cupsize, 2, QtWidgets.QTableWidget(str(len(cupsizeLarge))))
+        
+        rowPosition_variantopping = self.tableWidgetVarianTopping.rowCount()
+        self.tableWidgetCupSize.insertRow(rowPosition_cupsize)
+        for rasa in ambilrasa:
+            rowPosition_varianrasa = self.tableWidgetVarianRasa.rowCount()
+            ambiljumlahrasa = model2.viewDataFromDB("varian_rasa",rasa)
+            self.tableWidgetVarianRasa.setItem(rowPosition_varianrasa, 0, QtWidgets.QTableWidget(rasa))
+            self.tableWidgetVarianRasa.setItem(rowPosition_varianrasa, 1, QtWidgets.QTableWidget(str(len(ambiljumlahrasa))))
+        
+        ambiltopping = model2.ambiltopping()
+        for topping in ambiltopping:
+            rowPosition_variantopping = self.tableWidgetVarianTopping.rowCount()
+            ambiljumlahtopping = model2.viewDataFromDB("varian_toping",topping)
+            self.tableWidgetVarianTopping.setItem(rowPosition_variantopping, 0, QtWidgets.QTableWidget(topping))
+            self.tableWidgetVarianTopping.setItem(rowPosition_variantopping, 1, QtWidgets.QTableWidget(str(len(ambiljumlahtopping))))
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
