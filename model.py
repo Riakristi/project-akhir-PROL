@@ -37,16 +37,16 @@ def getNama(index):
     try:
         get = cursor.execute("SELECT * FROM data_barang WHERE Kode=?", (index,))
         fetch = get.fetchall()
-        return (fetch[0][1]).upper()
+        return (fetch[0][1])
 
     except sqlite3.Error as e:
         print(e)
 
-def getHarga(index):
+def getHarga(nama):
     try:
-        get = cursor.execute("SELECT * FROM data_barang WHERE Kode=?", (index,))
+        get = cursor.execute("SELECT Keterangan FROM data_barang WHERE Nama = ?", (nama,))
         fetch = get.fetchall()
-        return fetch[0][2]
+        return fetch
 
     except sqlite3.Error as e:
         print(e)
