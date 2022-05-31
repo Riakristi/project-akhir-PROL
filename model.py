@@ -47,7 +47,7 @@ def getNama(index):
         print(e)
 
 def getHarga(namaBarang):
-    """ sebuah fitur untuk mengambil harga barang berdasarkan nama barang """
+    """ sebuah fitur untuk mengambil harga barang berdasarkan nama barang"""
     try:
         get = cursor.execute("SELECT * FROM data_barang WHERE Nama=?", (namaBarang,))
         fetch = get.fetchall()
