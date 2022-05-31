@@ -51,7 +51,7 @@ def getHarga(namaBarang):
     try:
         get = cursor.execute("SELECT * FROM data_barang WHERE Nama=?", (namaBarang,))
         fetch = get.fetchall()
-        return fetch[0][2]
+        return fetch
 
     except sqlite3.Error as e:
         print(e)
