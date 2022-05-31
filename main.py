@@ -1,8 +1,14 @@
+# import modul
 import datetime
 import sys
+import xendit
+from xendit import EWallet
+import qrcode, json
+
+# import layout
 from PyQt5.QtWidgets import QMessageBox
-from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtGui import QPixmap
+from PyQt5 import QtWidgets, QtGui
 from layout.tampilan_awal import Ui_Form as tampilan_awal
 from layout.login_admin import Ui_MainWindow as login_admin
 from layout.menu_admin import Ui_MainWindow as menu_admin
@@ -12,15 +18,17 @@ from layout.pilihan import Ui_Form as pilihan_menu
 from layout.history import Ui_Form as riwayat_pembelian
 from layout.rekap_penjualan import Ui_Form as rekap_penjualan
 from layout.pembayaran import Ui_pembayaran as pembayaran
+
+""" import file model database """
+# import file model database
 import model
 import model2
-import xendit
-from xendit import EWallet
-import qrcode, json
 
+# api key dari xendit
 xendit.api_key = "xnd_development_nQN91JP7PtSKjWmf9dJJRpltxiS3nF0gXRvsFsdGMF7b92VxlAy7doG1pV2tMO"
 
 class tampilanAwal(tampilan_awal):
+    """ tampilan awal dari program """
     def __init__(self, dialog):
         tampilan_awal.__init__(self)
         self.setupUi(dialog)
@@ -37,7 +45,8 @@ class tampilanAwal(tampilan_awal):
         self.welcomeWindow.show()
 
     def admin(self):
-        tampilanAwalWindow.close() or self.welcomeWindow.close()
+        """ sebuah fungsi untuk membuat ui dari login admin """
+        tampilanAwalWindow.close()
 
         self.loginAdminWindow = QtWidgets.QMainWindow()
         self.loginAdminUi = login_admin()
@@ -46,28 +55,31 @@ class tampilanAwal(tampilan_awal):
         self.loginAdminUi.pushButtonLogin.clicked.connect(self.login)
 
     def login(self):
-        '''fungsi buat login di menu admin'''
+        ''' fungsi buat login di menu admin '''
         username = self.loginAdminUi.lineEditUsername.text()
         password = self.loginAdminUi.lineEditPassword.text()
         if(username == "admin" and password == "1234"):
-            self.loginAdminUi.labelWarning.show()
-            
+            """ apabila username dan password sesuai maka lanjut ke ui menu admin """
+            """ ui menu admin adalah sebuah fitur untuk menampilkan pilihan mau ganti nama barang, menuju riwayat pembelian, menuju rekap penjualan, atau mau kembali ke tampilan awal """
             self.menuAdminWindow = QtWidgets.QMainWindow()
             self.menuAdminUi = menu_admin()
             self.menuAdminUi.setupUi(self.menuAdminWindow)
             self.loginAdminWindow.close()
             self.menuAdminWindow.show()
 
-            self.menuAdminUi.pushButtonUpdateStok.clicked.connect(self.menuAdmin)
+            """ reaksi ketika push button di ui menu admin diklik """
+            self.menuAdminUi.pushButtonUpdateStok.clicked.connect(self.gantiNamaBarangAdmin)
             self.menuAdminUi.pushButtonRiwayatPembelian.clicked.connect(self.riwayatPembelianAdmin)
             self.menuAdminUi.pushButtonKembali.clicked.connect(self.welcomeScreen)
             self.menuAdminUi.pushButtonRekapPenjualan.clicked.connect(self.rekapPenjualanAdmin)
         
         else:
+            """ apabila username atau password tidak sesuai maka akan muncul tulisan peringatan di label warning """
             self.loginAdminUi.labelWarning.setText("Login gagal. Coba lagi!")
             self.loginAdminUi.labelWarning.show()
 
-    def menuAdmin(self):
+    def gantiNamaBarangAdmin(self):
+        """ sebuah fungsi untuk menampilkan ui ganti nama barang """
         self.menuAdminUi.updateWindow = QtWidgets.QMainWindow()
         self.menuAdminUi.updateUi = update_admin()
         self.menuAdminUi.updateApp = updateStok(self.menuAdminUi.updateWindow)
@@ -249,7 +261,6 @@ class tampilanAwal(tampilan_awal):
         )
         return ewallet_status
 
-
     def qr(self):
         global charge_id
         product = [
@@ -266,6 +277,7 @@ class tampilanAwal(tampilan_awal):
         
 
 class updateStok(update_admin):
+    """ class baru untuk fitur penggantian nama barang """
     def __init__(self, dialog):
         update_admin.__init__(self)
         self.setupUi(dialog)
@@ -276,6 +288,7 @@ class updateStok(update_admin):
         self.labelWarning.setText("Klik tombol ganti untuk mengganti nama")
 
     def showMenu(self):
+        """ fungsi untuk menampilkan daftar menu terbaru berdasarkan jenis menu yang tampil di combo box jenis """
         getJenis = self.comboBoxJenis.currentText()
         self.comboBox.clear()
         getMenu = model.getMenu(getJenis)
@@ -283,14 +296,16 @@ class updateStok(update_admin):
             self.comboBox.addItem(menu[1])
         
     def updateMenu(self):
+        """ sebuah fitur untuk mengganti nama barang berdasarkan nama yang tampil di combo box """
         namaAwal = self.comboBox.currentText()
         namaGanti = self.lineEditInput.text()
-
-        msg = QtWidgets.QMessageBox()
 
         model.updateMenu(namaAwal, namaGanti)
         self.lineEditInput.setText("")
         self.showMenu()
+
+        """ tampilan message box ketika data berhasil diganti """
+        msg = QtWidgets.QMessageBox()
         msg.setIcon(QMessageBox.Information)
         msg.setWindowTitle("Status data")
         msg.setText("Data berhasil diganti")
