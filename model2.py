@@ -1,8 +1,6 @@
 from distutils.log import error
 import sqlite3
 
-from colorama import Cursor
-
 def createDatabase():
     try:
         sqliteConnection = sqlite3.connect('database.db')
